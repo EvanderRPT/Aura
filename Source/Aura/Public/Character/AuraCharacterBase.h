@@ -17,6 +17,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	// ObjectPtr have addition feature such as
+	// access tracking: we can track how often a pointer is accessed or dereferenced
+	
+	UPROPERTY(EditAnywhere, Category=Combat)
+	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 
 };
