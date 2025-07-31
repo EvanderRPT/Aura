@@ -21,6 +21,15 @@ AAuraEnemy::AAuraEnemy()
 	
 }
 
+void AAuraEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (AbilitySystemComponent)
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	
+}
+
 void AAuraEnemy::HighlightActor()
 {
 	if (Weapon && GetMesh())

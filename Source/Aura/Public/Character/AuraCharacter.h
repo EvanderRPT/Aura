@@ -6,6 +6,8 @@
 #include "AuraCharacterBase.h"
 #include "AuraCharacter.generated.h"
 
+class AAuraPlayerState;
+
 UCLASS()
 class AURA_API AAuraCharacter : public AAuraCharacterBase
 {
@@ -13,4 +15,14 @@ class AURA_API AAuraCharacter : public AAuraCharacterBase
 
 public:
 	AAuraCharacter();
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+protected:
+	
+	UPROPERTY()
+	AAuraPlayerState* AuraPlayerState;
+
+private:
+	void InitAbilityActorInfo();
+	
 };
