@@ -4,8 +4,11 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
+#include "UI/HUD/AuraHUD.h"
 
 
 AAuraCharacter::AAuraCharacter()
@@ -30,7 +33,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	// Init ability actor info for the server
 	InitAbilityActorInfo();
 
-
+	
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -43,11 +46,22 @@ void AAuraCharacter::OnRep_PlayerState()
 
 void AAuraCharacter::InitAbilityActorInfo()
 {
-	AuraPlayerState = AuraPlayerState == nullptr ? GetPlayerState<AAuraPlayerState>(): AuraPlayerState;
+	AAuraPlayerState* AuraPlayerState =GetPlayerState<AAuraPlayerState>();
 	if (AuraPlayerState && AuraPlayerState->GetAbilitySystemComponent())
 	{
 		AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
 		AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
 		AttributeSet = AuraPlayerState->GetAttributeSet();
+
+
+		if (AAuraPlayerController* AuraPlayerController =Cast<AAuraPlayerController>(GetController()) )
+		{
+			
+			if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
+			{
+				AuraHUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
+			}
+		}
+		
 	}
 }
