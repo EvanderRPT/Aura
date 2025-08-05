@@ -3,3 +3,12 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
+void UAuraAbilitySystemComponent::AbilityActorInfoSet()
+{
+	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &ThisClass::EffectApplied);
+}
+
+void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffect)
+{
+	GEngine->AddOnScreenDebugMessage(1, 9.f, FColor::Red, FString("EffectApplied"));
+}
