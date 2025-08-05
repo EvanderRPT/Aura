@@ -14,7 +14,6 @@ void UOverlayWidgetController::BroadcastInitialValue()
 		OnMaxHealthChange.Broadcast(AS->GetMaxHealth());
 		OnManaChange.Broadcast(AS->GetMana());
 		OnMaxManaChange.Broadcast(AS->GetMaxMana());
-		
 	}
 }
 
@@ -31,12 +30,15 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		{
 			for (const FGameplayTag& Tag : AssetTags)
 			{
-				//TODO: Broadcast the tag to the Widget Controller
-				const FString Msg = FString::Printf(TEXT("GE Tag : %s "), *Tag.ToString());
-				GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Red, Msg);
 
-				FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
-				
+				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+				if (Tag.MatchesTag(MessageTag))
+				{
+					if (const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag))
+					{
+						MessageWidgetRowDelegate.Broadcast(*Row);
+					}
+				}
 			}
 		});
 	}
@@ -63,3 +65,4 @@ void UOverlayWidgetController::MaxManaChanged(const FOnAttributeChangeData& Data
 {
 	OnMaxManaChange.Broadcast(Data.NewValue);
 }
+
