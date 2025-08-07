@@ -39,7 +39,8 @@ void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect>& G
 		AuraDebug::Print(FString(TEXT("AAuraCharacterBase::ApplyEffectToSelf Failed")));
 		return;
 	}
-	const FGameplayEffectContextHandle EffectContextHandle = ASC->MakeEffectContext();
+	FGameplayEffectContextHandle EffectContextHandle = ASC->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(this);
 	const FGameplayEffectSpecHandle  EffectSpecHandle = ASC->MakeOutgoingSpec(GameplayEffectClass, Level, EffectContextHandle);
 	ASC->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), ASC);
 }
