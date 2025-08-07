@@ -63,3 +63,8 @@ void AAuraEnemy::UnHighlightActor()
 	}
 
 }
+
+int32 AAuraEnemy::GetPlayerLevel()
+{
+	return Level;
+}
