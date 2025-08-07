@@ -10,8 +10,6 @@
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
-	InitHealth(10.f);
-	InitMana(50.f);
 	
 }
 
