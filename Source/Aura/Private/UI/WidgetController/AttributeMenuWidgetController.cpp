@@ -10,5 +10,6 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 
 void UAttributeMenuWidgetController::BroadcastInitialValue()
 {
-	
 }
+
+
