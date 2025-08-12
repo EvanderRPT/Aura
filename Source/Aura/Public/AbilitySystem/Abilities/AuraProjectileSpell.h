@@ -24,4 +24,5 @@ protected:
 	TSubclassOf<AAuraProjectile> ProjectileClass;
 
 	
+	
 };
