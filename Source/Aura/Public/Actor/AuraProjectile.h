@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffectTypes.h"
 #include "GameFramework/Actor.h"
 #include "AuraProjectile.generated.h"
 
@@ -18,12 +19,17 @@ class AURA_API AAuraProjectile : public AActor
 public:
 	AAuraProjectile();
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
+	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
+	FGameplayEffectSpecHandle DamageEffectSpeHandle;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
 	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
 
 	UFUNCTION()
 	void OnSphereOverlap(UPrimitiveComponent* OverlayComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
