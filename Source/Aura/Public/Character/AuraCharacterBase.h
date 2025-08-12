@@ -8,10 +8,12 @@
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+class UMotionControllerComponent;
 class UGameplayAbility;
 class UGameplayEffect;
 class UAttributeSet;
 class UAbilitySystemComponent;
+class UMotionWarpingComponent;
 
 UCLASS()
 class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -26,7 +28,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	
+
 	UPROPERTY(EditAnywhere, Category=Combat)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 	
@@ -34,6 +36,7 @@ protected:
 	FName WeaponTipSocketName;
 
 	virtual FVector GetCombatSocketLocation() override;
+	
 	
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
