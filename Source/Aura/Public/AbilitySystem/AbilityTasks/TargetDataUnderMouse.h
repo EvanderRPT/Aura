@@ -25,4 +25,7 @@ public:
 private:
 	virtual void Activate() override;
 	void SendMouseCursorData();
+
+	UFUNCTION()
+	void OnTargetDatareplicatedCallback(const FGameplayAbilityTargetDataHandle& DataHandle, FGameplayTag ActivationTag);
 };
