@@ -25,7 +25,9 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	
+	virtual void Die() override;
+	UFUNCTION(NetMulticast, reliable)
+	virtual void MulticastHandleDeath();
 protected:
 	virtual void BeginPlay() override;
 
