@@ -148,7 +148,14 @@ public:
 	FGameplayAttributeData Mana;
 	ATTRIBUTE_ACCESSORS(ThisClass, Mana);
 
-	
+
+	/*
+	 * Mata Attributes
+	 */
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(ThisClass, IncomingDamage);
+
 	
 	
 	UFUNCTION()
