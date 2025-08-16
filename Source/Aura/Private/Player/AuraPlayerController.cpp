@@ -16,11 +16,22 @@
 #include "GameFramework/Character.h"
 #include "UI/Widget/DamageTextComponent.h"
 #include "Interaction/EnemyInterface.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "Blueprint/UserWidget.h"
+#include "Interaction/Inv_Highlightable.h"
+#include "InventoryManagement/Components/Inv_InventoryComponent.h"
+#include "Items/Components/Inv_ItemComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Widgets/HUD/Inv_HUDWidget.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
 	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
+	
+	TraceLength = 500.0;
+	ItemTraceChannel = ECC_GameTraceChannel1;
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -62,6 +73,8 @@ void AAuraPlayerController::AutoRun()
 		}
 	}
 }
+
+
 
 
 void AAuraPlayerController::CursorTrace()
@@ -231,8 +244,15 @@ void AAuraPlayerController::BeginPlay()
 	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	InputModeData.SetHideCursorDuringCapture(false);
 	SetInputMode(InputModeData);
+
+
+	InventoryComponent = FindComponentByClass<UInv_InventoryComponent>();
+	
+	CreateHUDWidget();
 	
 }
+
+
 
 void AAuraPlayerController::SetupInputComponent()
 {
@@ -241,7 +261,12 @@ void AAuraPlayerController::SetupInputComponent()
 	AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
 	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &ThisClass::ShiftPressed);
 	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &ThisClass::ShiftReleased);
+	AuraInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &ThisClass::PrimaryInteract);
+	AuraInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Started, this, &ThisClass::ToggleInventory);
 	AuraInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
+	
+	
+	
 }
 
 
@@ -261,3 +286,102 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 		ControllerPawn->AddMovementInput(RightDirection, InputAxisVector.X);
 	}
 }
+
+
+
+/*
+ * Inventory System
+ */
+
+void AAuraPlayerController::ToggleInventory()
+{
+	if (!InventoryComponent.IsValid()) return;
+	InventoryComponent->ToggleInventoryMenu();
+
+	if (InventoryComponent->IsMenuOpen())
+	{
+		HUDWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else
+	{
+		HUDWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+}
+
+void AAuraPlayerController::PrimaryInteract()
+{
+	if (!ThisTraceActor.IsValid()) return;
+
+	UInv_ItemComponent* ItemComp = ThisTraceActor->FindComponentByClass<UInv_ItemComponent>();
+	if (!IsValid(ItemComp) || !InventoryComponent.IsValid()) return;
+	InventoryComponent->TryAddItem(ItemComp);
+}
+
+void AAuraPlayerController::CreateHUDWidget()
+{
+	if (!IsLocalController()) return;
+
+	HUDWidget = CreateWidget<UInv_HUDWidget>(this, HUDWidgetClass);
+	if (IsValid(HUDWidget))
+	{
+		HUDWidget->AddToViewport();
+	}
+}
+
+void AAuraPlayerController::TraceForItem()
+{
+	if (!IsValid(GEngine) || !IsValid(GEngine->GameViewport)) return;
+	
+	FVector2D ViewportSize;
+	GEngine->GameViewport->GetViewportSize(ViewportSize);
+	const FVector2D ViewportCenter = ViewportSize / 2.f;
+
+	FVector TraceStart;
+	FVector Forward;
+	if (!UGameplayStatics::DeprojectScreenToWorld(this, ViewportCenter, TraceStart, Forward)) return;
+
+	const FVector TraceEnd = TraceStart + Forward * TraceLength;
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ItemTraceChannel);
+
+	LastTraceActor = ThisTraceActor;
+	ThisTraceActor = HitResult.GetActor();
+
+	if (!ThisTraceActor.IsValid())
+	{
+		if (IsValid(HUDWidget)) HUDWidget->HidePickupMessage();
+	}
+	
+	if (ThisTraceActor == LastTraceActor) return;
+
+	if (ThisTraceActor.IsValid())
+	{
+
+		if (UActorComponent* Highlightable = ThisTraceActor->FindComponentByInterface(UInv_Highlightable::StaticClass()); IsValid(Highlightable))
+		{
+			IInv_Highlightable::Execute_Highlight(Highlightable);
+		}
+		
+		
+		UInv_ItemComponent* ItemComponent = ThisTraceActor->FindComponentByClass<UInv_ItemComponent>();
+		if (!IsValid(ItemComponent)) return;
+
+		if (IsValid(HUDWidget)) HUDWidget->ShowPickupMessage(ItemComponent->GetPickupMessage());
+		
+	}
+	if (LastTraceActor.IsValid())
+	{
+		if (UActorComponent* Highlightable = LastTraceActor->FindComponentByInterface(UInv_Highlightable::StaticClass()); IsValid(Highlightable))
+		{
+			IInv_Highlightable::Execute_UnHighlight(Highlightable);
+		}
+	}
+}
+
+
+
+
+
+
+
+

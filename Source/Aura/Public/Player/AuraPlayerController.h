@@ -7,6 +7,8 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
+class UInv_HUDWidget;
+class UInv_InventoryComponent;
 class UDamageTextComponent;
 class USplineComponent;
 class UAuraAbilitySystemComponent;
@@ -30,6 +32,10 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter);
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleInventory();
+	
 protected:
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
@@ -85,6 +91,44 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
+
+
+
+	/*
+	 * Inventory System
+	 */
+	void PrimaryInteract();
+	
+	void CreateHUDWidget();
+	void TraceForItem();
+
+	
+	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
+	
+
+
+	UPROPERTY(EditDefaultsOnly, Category="Inventory")
+	TObjectPtr<UInputAction> PrimaryInteractAction;
+
+	UPROPERTY(EditDefaultsOnly, Category="Inventory")
+	TObjectPtr<UInputAction> ToggleInventoryAction;
+	
+	
+	UPROPERTY(EditDefaultsOnly, Category="Inventory")
+	TSubclassOf<UInv_HUDWidget> HUDWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UInv_HUDWidget> HUDWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category="Inventory")
+	double TraceLength;
+
+	UPROPERTY(EditDefaultsOnly, Category="Inventory")
+	TEnumAsByte<ECollisionChannel> ItemTraceChannel;
+
+	
+	TWeakObjectPtr<AActor> ThisTraceActor;
+	TWeakObjectPtr<AActor> LastTraceActor;
 };
 
 
