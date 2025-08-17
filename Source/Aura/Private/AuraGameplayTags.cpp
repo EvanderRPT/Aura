@@ -101,11 +101,56 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	FName("Damage"), 
 	FString("Damage")
 	);
+
+	/*
+	 * Damage Types
+	 */
 	GameplayTags.Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Damage.Fire"), 
 	FString("fire damage types")
 	);
-	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Fire);
+	GameplayTags.Damage_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Lightning"), 
+		FString("Lightning damage types")
+		);
+	GameplayTags.Damage_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Damage.Arcane"), 
+	FString("Arcane damage types")
+	);
+	GameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Physical"), 
+		FString("Physical damage types")
+		);
+
+
+	/*
+	 * Resistance
+	 */
+	GameplayTags.Attribute_Resistance_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attribute.Resistance.Arcane"), 
+		FString("Resistance to Arcane damage types")
+		);
+	GameplayTags.Attribute_Resistance_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attribute.Resistance.Fire"), 
+		FString("Resistance to Fire damage types")
+		);
+	GameplayTags.Attribute_Resistance_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Attribute.Resistance.Lightning"), 
+	FString("Resistance to Lightning damage types")
+	);
+	GameplayTags.Attribute_Resistance_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Attribute.Resistance.Physical"), 
+	FString("Resistance to Physical damage types")
+	);
+
+
+	/*
+	 * Map of Damage Type to Resistance
+	 */
+	GameplayTags.DamageTypeToResistances.Add(GameplayTags.Damage_Arcane, GameplayTags.Attribute_Resistance_Arcane);
+	GameplayTags.DamageTypeToResistances.Add(GameplayTags.Damage_Physical, GameplayTags.Attribute_Resistance_Physical);
+	GameplayTags.DamageTypeToResistances.Add(GameplayTags.Damage_Lightning, GameplayTags.Attribute_Resistance_Lightning);
+	GameplayTags.DamageTypeToResistances.Add(GameplayTags.Damage_Fire, GameplayTags.Attribute_Resistance_Fire);
 
 	
 
