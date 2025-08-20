@@ -24,10 +24,23 @@ public:
 	AAuraCharacterBase();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
+
+	/*
+	 * Combat Interface
+	 */
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die() override;
 	UFUNCTION(NetMulticast, reliable)
 	virtual void MulticastHandleDeath();
+	virtual FVector GetCombatSocketLocation_Implementation() override;
+	virtual bool IsDead_Implementation() const override;
+	virtual AActor* GetAvatar_Implementation()  override;
+	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
+	
+
+	UPROPERTY(EditAnywhere, Category=Combat)
+	TArray<FTaggedMontage> AttackMontages;
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -41,12 +54,7 @@ protected:
 
 	bool bDead = false;
 	
-	/*
-	 * Combat Interface
-	 */
-	virtual FVector GetCombatSocketLocation_Implementation() override;
-	virtual bool IsDead_Implementation() const override;
-	virtual AActor* GetAvatar_Implementation()  override;
+	
 	
 	
 	UPROPERTY()
