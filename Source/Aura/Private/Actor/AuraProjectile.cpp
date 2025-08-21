@@ -10,6 +10,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Aura/Aura.h"
 #include "Components/AudioComponent.h"
 
@@ -40,9 +41,11 @@ void AAuraProjectile::BeginPlay()
 	Super::BeginPlay();
 	SetLifeSpan(LifeSpan);
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnSphereOverlap);
+
 	
 	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopSound, GetRootComponent());
-	LoopingSoundComponent->Activate();
+	if (LoopingSoundComponent)
+		LoopingSoundComponent->Activate();
 }
 
 void AAuraProjectile::Destroyed()
@@ -61,6 +64,10 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlayComponent, AAc
 {
 	if (DamageEffectSpeHandle.Data.IsValid() && DamageEffectSpeHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor) return;
 
+	if (!UAuraAbilitySystemLibrary::IsNoFriend(DamageEffectSpeHandle.Data.Get()->GetContext().GetEffectCauser(), OtherActor))
+	{
+		return;
+	}
 	if (!bHit)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
