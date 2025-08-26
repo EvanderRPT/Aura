@@ -40,7 +40,7 @@ void AAuraPlayerState::SetXP(int32 NewXP)
 void AAuraPlayerState::SetLevel(int32 NewLevel)
 {
 	Level = NewLevel;
-	OnLevleChangedDelegate.Broadcast(Level);
+	OnLevelChangedDelegate.Broadcast(Level);
 }
 
 void AAuraPlayerState::AddToXP(int32 NewXP)
@@ -52,13 +52,13 @@ void AAuraPlayerState::AddToXP(int32 NewXP)
 void AAuraPlayerState::AddToLevel(int32 NewLevel)
 {
 	Level += NewLevel;
-	OnLevleChangedDelegate.Broadcast(Level);
+	OnLevelChangedDelegate.Broadcast(Level);
 
 }
 
 void AAuraPlayerState::OnRep_Level(int32 OldLevel)
 {
-	OnLevleChangedDelegate.Broadcast(OldLevel);
+	OnLevelChangedDelegate.Broadcast(OldLevel);
 }
 
 void AAuraPlayerState::OnRep_XP(int32 OldXP)

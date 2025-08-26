@@ -7,6 +7,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "OverlayWidgetController.generated.h"
 
+class ULevelUpInfo;
 struct FAuraAbilityInfo;
 class UAuraAbilitySystemComponent;
 class UAbilityInfo;
@@ -55,7 +56,8 @@ public:
 	FOnAttributeChangedSignature OnManaChange;
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
 	FOnAttributeChangedSignature OnMaxManaChange;
-
+	UPROPERTY(BlueprintAssignable, Category="GAS|XP")
+	FOnAttributeChangedSignature OnXPPercentChangedDelegate;
 	
 	UPROPERTY(BlueprintAssignable, Category="GAS|Message")
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;
@@ -69,14 +71,18 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="GAS|WidgetData")
 	TObjectPtr<UAbilityInfo> AbilityInfo;
-	
+
 
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag Tag);
 
 	UFUNCTION()
 	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC);
+
+	UFUNCTION()
+	void OnXPChanged(int32 NewXP) const;
 };
+
 
 
 
