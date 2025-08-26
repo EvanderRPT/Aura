@@ -66,6 +66,15 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Maximum amount of mana the character can have")
 	);
 
+
+	/*
+	 * Meta Tags
+	 */
+	GameplayTags.Attributes_Meta_IncomingXP = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Meta.IncomingXP"), 
+		FString("IncomingXP ")
+	);
+	
 	/*
 	 * Input Tags
 	 */
