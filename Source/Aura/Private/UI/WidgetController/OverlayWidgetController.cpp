@@ -27,6 +27,11 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		if ( AAuraPlayerState* AuraPS  = Cast<AAuraPlayerState>(PlayerState))
 		{
 			AuraPS->OnXPChangedDelegate.AddUObject(this, &ThisClass::OnXPChanged);
+			AuraPS->OnLevelChangedDelegate.AddLambda(
+				[this](int32 NewLevel)
+				{
+					OnPlayerLevelChanged.Broadcast(NewLevel);
+				});
 		}
 
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
