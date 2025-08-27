@@ -37,7 +37,8 @@ void UAttributeMenuWidgetController::BroadcastInitialValue()
 	{
 		BroadcastAttributeInfo(Pair.Key, Pair.Value());
 	}
-	
+	AAuraPlayerState* PS = CastChecked<AAuraPlayerState>(PlayerState);
+	AttributePointsChangedDelegate.Broadcast(PS->GetAttributePoints());
 	
 }
 
