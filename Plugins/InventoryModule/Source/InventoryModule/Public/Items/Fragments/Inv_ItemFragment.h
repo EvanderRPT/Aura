@@ -6,6 +6,7 @@
 #include "StructUtils/InstancedStruct.h"
 #include "Inv_ItemFragment.generated.h"
 
+class UGameplayEffect;
 class AInv_EquipActor;
 class UInv_CompositeBase;
 class APlayerController;
@@ -198,6 +199,8 @@ struct FInv_HealthPotionFragment : public FInv_ConsumeModifier
 	GENERATED_BODY()
 	virtual void OnConsume(APlayerController* PC) override;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "Potion")
+	TSubclassOf<UGameplayEffect> HealGameplayEffect;
 };
 
 USTRUCT(BlueprintType)

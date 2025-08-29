@@ -39,7 +39,7 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 	CursorTrace();
 	AutoRun();
-	
+	TraceForItem();
 }
 
 void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit)
@@ -333,53 +333,86 @@ void AAuraPlayerController::CreateHUDWidget()
 
 void AAuraPlayerController::TraceForItem()
 {
-	if (!IsValid(GEngine) || !IsValid(GEngine->GameViewport)) return;
-	
-	FVector2D ViewportSize;
-	GEngine->GameViewport->GetViewportSize(ViewportSize);
-	const FVector2D ViewportCenter = ViewportSize / 2.f;
+    APawn* MyPawn = GetPawn();
+    if (!IsValid(MyPawn)) return;
 
-	FVector TraceStart;
-	FVector Forward;
-	if (!UGameplayStatics::DeprojectScreenToWorld(this, ViewportCenter, TraceStart, Forward)) return;
+    FVector PlayerLocation = MyPawn->GetActorLocation();
+    float DetectionRadius = 200.f; // adjust as needed
 
-	const FVector TraceEnd = TraceStart + Forward * TraceLength;
-	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ItemTraceChannel);
+    // Create collision shape (sphere around player)
+    FCollisionShape Sphere = FCollisionShape::MakeSphere(DetectionRadius);
 
-	LastTraceActor = ThisTraceActor;
-	ThisTraceActor = HitResult.GetActor();
+    TArray<FOverlapResult> Overlaps;
+    FCollisionQueryParams QueryParams;
+    QueryParams.AddIgnoredActor(MyPawn); // don’t detect yourself
 
-	if (!ThisTraceActor.IsValid())
-	{
-		if (IsValid(HUDWidget)) HUDWidget->HidePickupMessage();
-	}
-	
-	if (ThisTraceActor == LastTraceActor) return;
+    bool bHit = GetWorld()->OverlapMultiByChannel(
+        Overlaps,
+        PlayerLocation,
+        FQuat::Identity,
+        ItemTraceChannel, // same channel you use for items
+        Sphere,
+        QueryParams
+    );
 
-	if (ThisTraceActor.IsValid())
-	{
+    AActor* NearestItem = nullptr;
+    float ClosestDistSq = FLT_MAX;
 
-		if (UActorComponent* Highlightable = ThisTraceActor->FindComponentByInterface(UInv_Highlightable::StaticClass()); IsValid(Highlightable))
-		{
-			IInv_Highlightable::Execute_Highlight(Highlightable);
-		}
-		
-		
-		UInv_ItemComponent* ItemComponent = ThisTraceActor->FindComponentByClass<UInv_ItemComponent>();
-		if (!IsValid(ItemComponent)) return;
+    if (bHit)
+    {
+        for (auto& Result : Overlaps)
+        {
+            AActor* OverlappedActor = Result.GetActor();
+            if (!IsValid(OverlappedActor)) continue;
 
-		if (IsValid(HUDWidget)) HUDWidget->ShowPickupMessage(ItemComponent->GetPickupMessage());
-		
-	}
-	if (LastTraceActor.IsValid())
-	{
-		if (UActorComponent* Highlightable = LastTraceActor->FindComponentByInterface(UInv_Highlightable::StaticClass()); IsValid(Highlightable))
-		{
-			IInv_Highlightable::Execute_UnHighlight(Highlightable);
-		}
-	}
+            float DistSq = FVector::DistSquared(PlayerLocation, OverlappedActor->GetActorLocation());
+            if (DistSq < ClosestDistSq)
+            {
+                ClosestDistSq = DistSq;
+                NearestItem = OverlappedActor;
+            }
+        }
+    }
+
+    LastTraceActor = ThisTraceActor;
+    ThisTraceActor = NearestItem;
+
+    // Hide old
+    if (!ThisTraceActor.IsValid() && IsValid(HUDWidget))
+    {
+        HUDWidget->HidePickupMessage();
+    }
+
+    if (ThisTraceActor == LastTraceActor) return;
+
+    // Highlight new item
+    if (ThisTraceActor.IsValid())
+    {
+        if (UActorComponent* Highlightable = ThisTraceActor->FindComponentByInterface(UInv_Highlightable::StaticClass()); IsValid(Highlightable))
+        {
+            IInv_Highlightable::Execute_Highlight(Highlightable);
+        }
+
+        if (UInv_ItemComponent* ItemComponent = ThisTraceActor->FindComponentByClass<UInv_ItemComponent>())
+        {
+            if (IsValid(HUDWidget))
+                HUDWidget->ShowPickupMessage(ItemComponent->GetPickupMessage());
+        }
+    }
+
+    // Unhighlight old item
+    if (LastTraceActor.IsValid())
+    {
+        if (UActorComponent* Highlightable = LastTraceActor->FindComponentByInterface(UInv_Highlightable::StaticClass()); IsValid(Highlightable))
+        {
+            IInv_Highlightable::Execute_UnHighlight(Highlightable);
+        }
+    }
 }
+
+
+
+
 
 
 

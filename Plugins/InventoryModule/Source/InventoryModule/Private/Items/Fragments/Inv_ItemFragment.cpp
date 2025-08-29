@@ -1,4 +1,8 @@
 ﻿#include "Items/Fragments/Inv_ItemFragment.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
+#include "GameplayEffect.h"
+#include "GameplayEffectTypes.h"
 
 #include "EquipmentManagement/EquipActor/Inv_EquipActor.h"
 #include "Widgets/Composite/Inv_CompositeBase.h"
@@ -111,6 +115,36 @@ void FInv_HealthPotionFragment::OnConsume(APlayerController* PC)
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Health Potion consumed: Healing by %f"), GetValue()));
+	}
+	
+
+	if (!PC) return;
+
+	APawn* Pawn = PC->GetPawn();
+	if (!Pawn) return;
+
+	// Get the Ability System Component from the Pawn
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Pawn);
+	if (!ASC) return;
+
+	// Make sure your GE_Heal is set (you can expose it as a UPROPERTY in your fragment class)
+	if (HealGameplayEffect)
+	{
+		FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
+		ContextHandle.AddSourceObject(Pawn);
+
+		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(HealGameplayEffect, 1.f, ContextHandle);
+		if (SpecHandle.IsValid())
+		{
+			// Apply the GameplayEffect to self
+			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		}
+	}
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
+			FString::Printf(TEXT("Health Potion consumed: Healing by %f"), GetValue()));
 	}
 }
 

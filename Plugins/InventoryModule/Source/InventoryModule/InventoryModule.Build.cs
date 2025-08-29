@@ -43,7 +43,7 @@ public class InventoryModule : ModuleRules
 				"Slate",
 				"SlateCore", 
 				"UMG",
-				"InputCore",
+				"InputCore", "GameplayAbilities", "GameplayAbilities", "GameplayAbilities",
 				
 				// ... add private dependencies that you statically link with here ...	
 			}
