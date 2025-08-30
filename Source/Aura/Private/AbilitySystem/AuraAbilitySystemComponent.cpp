@@ -62,6 +62,7 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
 			GiveAbility(AbilitySpec);
 			MarkAbilitySpecDirty(AbilitySpec);
 			// MarkAbilitySpecDirty if you ever want to force an ability spec to replicate now instead  of waiting till the next update.
+			ClientUpdateAbilityStatus_Implementation(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible);
 			
 		}
 		
@@ -77,6 +78,12 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
 		bStartupAbilitiesGiven = true;
 		AbilitiesGivenDelegate.Broadcast();
 	}
+}
+
+void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag,
+	const FGameplayTag& StatusTag)
+{
+	AbilityStatusChanged.Broadcast(AbilityTag, StatusTag);
 }
 
 
