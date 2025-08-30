@@ -126,7 +126,7 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbi
 	return FGameplayTag();
 }
 
-FGameplayTag UAuraAbilitySystemComponent::GetStaticFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+FGameplayTag UAuraAbilitySystemComponent::GetStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec)
 {
 	for (FGameplayTag StatusTag : AbilitySpec.GetDynamicSpecSourceTags())
 	{
