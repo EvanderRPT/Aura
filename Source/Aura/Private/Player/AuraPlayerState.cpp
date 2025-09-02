@@ -45,6 +45,11 @@ void AAuraPlayerState::SetLevel(int32 NewLevel)
 	OnLevelChangedDelegate.Broadcast(Level);
 }
 
+int32 AAuraPlayerState::GetLevel_Implementation() const
+{
+	return Level;
+}
+
 void AAuraPlayerState::AddToXP(int32 NewXP)
 {
 	XP += NewXP;

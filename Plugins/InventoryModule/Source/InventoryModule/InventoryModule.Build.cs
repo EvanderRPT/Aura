@@ -29,7 +29,7 @@ public class InventoryModule : ModuleRules
 				"EnhancedInput",
 				"NetCore",
 				"StructUtils",
-				"GameplayTags"
+				"GameplayTags", "GameplayAbilities"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

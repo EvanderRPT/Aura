@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "ActiveGameplayEffectHandle.h"
 #include "ContentBrowserItemData.h"
 #include "GameplayTagContainer.h"
 #include "StructUtils/InstancedStruct.h"
@@ -232,6 +233,11 @@ struct FInv_StrengthModifier : public FInv_EquipModifier
 
 	virtual void OnEquip(APlayerController* PC) override;
 	virtual void OnUnequip(APlayerController* PC) override;
+	UPROPERTY(EditDefaultsOnly, Category = "Strength")
+	TSubclassOf<UGameplayEffect> StrengthGameplayEffect;
+	
+	FActiveGameplayEffectHandle ActiveGEHandle;
+	
 };
 
 

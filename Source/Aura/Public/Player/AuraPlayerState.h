@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
+#include "Interaction/LevelProvider.h"
 #include "AuraPlayerState.generated.h"
 
 class UAttributeSet;
@@ -15,7 +16,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChanged, int32)
  * 
  */
 UCLASS()
-class AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInterface
+class AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInterface, public ILevelProvider
 {
 	GENERATED_BODY()
 
@@ -45,6 +46,11 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<ULevelUpInfo> LevelUpInfo;
 
+
+	/*
+	 * Inventory
+	 */
+	virtual int32 GetLevel_Implementation() const override;
 
 protected:
 

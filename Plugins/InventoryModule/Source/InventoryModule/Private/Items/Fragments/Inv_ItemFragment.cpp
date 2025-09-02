@@ -5,6 +5,8 @@
 #include "GameplayEffectTypes.h"
 
 #include "EquipmentManagement/EquipActor/Inv_EquipActor.h"
+#include "GameFramework/PlayerState.h"
+#include "Interaction/LevelProvider.h"
 #include "Widgets/Composite/Inv_CompositeBase.h"
 #include "Widgets/Composite/Inv_Leaf_Image.h"
 #include "Widgets/Composite/Inv_Leaf_LabeledValue.h"
@@ -116,7 +118,7 @@ void FInv_HealthPotionFragment::OnConsume(APlayerController* PC)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Health Potion consumed: Healing by %f"), GetValue()));
 	}
-	
+
 
 	if (!PC) return;
 
@@ -130,22 +132,25 @@ void FInv_HealthPotionFragment::OnConsume(APlayerController* PC)
 	// Make sure your GE_Heal is set (you can expose it as a UPROPERTY in your fragment class)
 	if (HealGameplayEffect)
 	{
+		int32 PlayerLevel = 1;
+		if (APlayerState* PS = PC->GetPlayerState<APlayerState>())
+		{
+			if (PS->GetClass()->ImplementsInterface(ULevelProvider::StaticClass()))
+			{
+				PlayerLevel = ILevelProvider::Execute_GetLevel(PS);
+			}
+		}
+		
 		FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
 		ContextHandle.AddSourceObject(Pawn);
-
-		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(HealGameplayEffect, 1.f, ContextHandle);
+		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(HealGameplayEffect, PlayerLevel, ContextHandle);
 		if (SpecHandle.IsValid())
 		{
 			// Apply the GameplayEffect to self
 			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 		}
 	}
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
-			FString::Printf(TEXT("Health Potion consumed: Healing by %f"), GetValue()));
-	}
+	
 }
 
 void FInv_ManaPotionFragment::OnConsume(APlayerController* PC)
@@ -158,22 +163,55 @@ void FInv_ManaPotionFragment::OnConsume(APlayerController* PC)
 
 void FInv_StrengthModifier::OnEquip(APlayerController* PC)
 {
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		5.f,
-		FColor::Green,
-		FString::Printf(TEXT("Strength increased by: %f"),
-			GetValue()));
+	// GEngine->AddOnScreenDebugMessage(
+	// 	-1,
+	// 	5.f,
+	// 	FColor::Green,
+	// 	FString::Printf(TEXT("Strength increased by: %f"),
+	// 		GetValue()));
+
+	if (!PC) return;
+
+	APawn* Pawn = PC->GetPawn();
+	if (!Pawn) return;
+
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Pawn);
+	if (!ASC) return;
+
+	if (StrengthGameplayEffect)
+	{
+		FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
+		ContextHandle.AddSourceObject(Pawn);
+
+		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(StrengthGameplayEffect, 1.f, ContextHandle);
+		if (SpecHandle.IsValid())
+		{
+			ActiveGEHandle = ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get()); // Store the handle!
+		}
+	}
 }
 
 void FInv_StrengthModifier::OnUnequip(APlayerController* PC)
 {
+	if (!PC) return;
+
+	APawn* Pawn = PC->GetPawn();
+	if (!Pawn) return;
+
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Pawn);
+	if (!ASC) return;
+
+	if (ActiveGEHandle.IsValid())
+	{
+		ASC->RemoveActiveGameplayEffect(ActiveGEHandle);
+		ActiveGEHandle.Invalidate(); // Clear it after removing
+	}
+	
 	GEngine->AddOnScreenDebugMessage(
-		-1,
-		5.f,
-		FColor::Red,
-		FString::Printf(TEXT("Item unequipped. Strength decreased by: %f"),
-			GetValue()));
+	-1,
+	5.f,
+	FColor::Red,
+	FString::Printf(TEXT("Item unequipped. Strength decreased by: %f"), GetValue()));
 }
 
 void FInv_ArmorModifier::OnEquip(APlayerController* PC)
