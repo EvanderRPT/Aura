@@ -100,7 +100,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		TargetPlayerLevel = ICombatInterface::Execute_GetPlayerLevel(TargetAvatar);
 	}
 
-
+	
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
@@ -122,7 +122,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		{
 			continue; // skip this damage type; nothing to apply
 		}
-
+		
 		checkf(AuraDamageStatics().TagsToCaptureDefs.Contains(ResistanceTag),
 			   TEXT("TagsToCaptureDefs doesn't contain Tag: [%s] in ExecCalc_Damage"),
 			   *ResistanceTag.ToString());
@@ -131,7 +131,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		float Resistance = 0.f;
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluationParameters, Resistance);
 		Resistance = FMath::Clamp(Resistance, 0.f, 100.f);
-
+		
 		DamageTypeValue *= (100.f - Resistance) / 100.f;
 		Damage += DamageTypeValue;
 	}
