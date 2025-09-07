@@ -28,7 +28,7 @@ protected:
 	TSubclassOf<AAuraProjectile> ProjectileClass;
 
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly) 
 	int32 NumProjectiles = 5;
 	
 
