@@ -68,7 +68,7 @@ public:
 	float GetDebuffDuration() const { return DebuffDuration; }
 	float GetDebuffFrequency() const { return DebuffFrequency; }
 	TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType; }
-	FVector GetDeathImpulse() const { return DeathImpulse; }
+	FVector		GetDeathImpulse() const { return DeathImpulse; }
 	
 	
 	
