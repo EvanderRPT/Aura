@@ -18,6 +18,7 @@
 #include "Interaction/EnemyInterface.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Blueprint/UserWidget.h"
 #include "Interaction/Inv_Highlightable.h"
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
@@ -181,6 +182,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				}
 				bAutoRunning = true;
 			}
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
 		}
 		FollowTime = 0.0f;
 		bTargeting = false;
