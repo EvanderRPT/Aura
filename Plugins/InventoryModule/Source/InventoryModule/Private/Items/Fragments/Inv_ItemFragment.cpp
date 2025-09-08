@@ -300,7 +300,7 @@ AInv_EquipActor* FInv_EquipmentFragment::SpawnAttachedActor(USkeletalMeshCompone
 	if (!IsValid(EquipActorClass) || !IsValid(AttachMesh)) return nullptr;
 
 	AInv_EquipActor* SpawnedActor = AttachMesh->GetWorld()->SpawnActor<AInv_EquipActor>(EquipActorClass);
-	SpawnedActor->AttachToComponent(AttachMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, SocketAttachPoint);
+	SpawnedActor->AttachToComponent(AttachMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketAttachPoint);
 
 	return SpawnedActor;
 }

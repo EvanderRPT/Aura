@@ -22,7 +22,7 @@ void UInv_ItemComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProper
 
 void UInv_ItemComponent::InitItemManifest(FInv_ItemManifest CopyOfManifest)
 {
-	
+	ItemManifest = CopyOfManifest;
 }
 
 void UInv_ItemComponent::PickUp()

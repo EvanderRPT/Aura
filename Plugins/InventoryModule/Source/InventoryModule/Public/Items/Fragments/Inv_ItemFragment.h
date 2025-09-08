@@ -274,9 +274,8 @@ struct FInv_EquipmentFragment : public FInv_InventoryItemFragment
 
 	AInv_EquipActor* SpawnAttachedActor(USkeletalMeshComponent* AttachMesh) const;
 	void DestroyAttachedActor() const;
-	FGameplayTag GetEquipmentTag() const { return EquipmentTag; }
+	FGameplayTag GetEquipmentType() const { return EquipmentType; }
 	void SetEquippedActor(AInv_EquipActor* Actor);
-
 	
 private:
 	
@@ -293,7 +292,7 @@ private:
 	FName SocketAttachPoint{NAME_None};
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
-	FGameplayTag EquipmentTag = FGameplayTag::EmptyTag;
+	FGameplayTag EquipmentType = FGameplayTag::EmptyTag;
 };
 
 
