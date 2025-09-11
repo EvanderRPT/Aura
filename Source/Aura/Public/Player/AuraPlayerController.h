@@ -39,7 +39,7 @@ public:
 	void ToggleInventory();
 	
 	UFUNCTION(BlueprintCallable)
-	void ShowMagicCircle();
+	void ShowMagicCircle(UMaterialInterface* DecalMaterial = nullptr);
 
 	UFUNCTION(BlueprintCallable)
 	void HideMagicCircle();

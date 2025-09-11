@@ -21,6 +21,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Actor/MagicCircle.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/DecalComponent.h"
 #include "Interaction/Inv_Highlightable.h"
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Items/Components/Inv_ItemComponent.h"
@@ -345,11 +346,15 @@ void AAuraPlayerController::ToggleInventory()
 	}
 }
 
-void AAuraPlayerController::ShowMagicCircle()
+void AAuraPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
 {
 	if (!IsValid(MagicCircle))
 	{
 		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass);
+		if (DecalMaterial)
+		{
+			MagicCircle->MagicCircleDecal->SetMaterial(0, DecalMaterial);
+		}
 	}
 }
 
