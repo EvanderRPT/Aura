@@ -17,7 +17,7 @@ class UAttributeSet;
 class UAbilitySystemComponent;
 class UMotionWarpingComponent;
 class UDebuffNiagaraComponent;
-
+class UPassiveNiagaraComponent;
 
 UCLASS()
 class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -75,7 +75,7 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-
+	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category=Combat)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
@@ -162,6 +162,17 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPassiveNiagaraComponent> HaloOfProtectionNiagaraComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPassiveNiagaraComponent> LifeSiphonNiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPassiveNiagaraComponent> ManaSiphonNiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneComponent> EffectAttachComponent;
 
 };
