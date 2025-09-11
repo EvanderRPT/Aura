@@ -18,6 +18,7 @@ struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
 class IEnemyInterface;
+class AMagicCircle;
 /**
  * 
  */
@@ -36,6 +37,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleInventory();
+	
+	UFUNCTION(BlueprintCallable)
+	void ShowMagicCircle();
+
+	UFUNCTION(BlueprintCallable)
+	void HideMagicCircle();
 	
 protected:
 	virtual void SetupInputComponent() override;
@@ -96,7 +103,14 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AMagicCircle> MagicCircleClass;
 
+	UPROPERTY()
+	TObjectPtr<AMagicCircle> MagicCircle;
+
+	void UpdateMagicCircleLocation();
+	
 
 	/*
 	 * Inventory System
