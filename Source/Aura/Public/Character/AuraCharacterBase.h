@@ -29,7 +29,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
-
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	/*
 	 * Combat Interface
 	 */
@@ -51,9 +51,11 @@ public:
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	virtual void SetIsBeingShocked_Implementation(bool bInShock) override;
 	virtual bool IsBeingShocked_Implementation() const override;
+	virtual FOnDamageSignature& GetOnDamageSignature() override;
 	
 	FOnASCRegistered OnAscRegistered;
 	FOnDeathSignature OnDeath;
+	FOnDamageSignature OnDamageDelegate;
 	
 	UPROPERTY(EditAnywhere, Category=Combat)
 	TArray<FTaggedMontage> AttackMontages;

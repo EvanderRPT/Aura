@@ -63,6 +63,14 @@ UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 	return  AbilitySystemComponent;
 }
 
+float AAuraCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	const float DamageTaken = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	OnDamageDelegate.Broadcast(DamageTaken);
+	return DamageTaken;
+}
+
 UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 {
 	return HitReactMontage;
@@ -216,6 +224,11 @@ void AAuraCharacterBase::SetIsBeingShocked_Implementation(bool bInShock)
 bool AAuraCharacterBase::IsBeingShocked_Implementation() const
 {
 	return bIsBeingShocked;
+}
+
+FOnDamageSignature& AAuraCharacterBase::GetOnDamageSignature()
+{
+	return OnDamageDelegate;
 }
 
 
