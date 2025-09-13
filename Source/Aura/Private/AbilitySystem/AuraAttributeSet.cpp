@@ -297,14 +297,26 @@ void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute,
 
 void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, const float Damage, bool bBlockedHit, bool bCriticalHit) const
 {
-	if (Props.SourceCharacter != Props.TargetCharacter)
+	if (!IsValid(Props.TargetCharacter))
 	{
-		if (AAuraPlayerController* PC =Cast<AAuraPlayerController>( Props.SourceCharacter->Controller))
+		return;
+	}
+
+	if (Props.SourceCharacter && Props.SourceCharacter != Props.TargetCharacter)
+	{
+		if (IsValid(Props.SourceController))
 		{
-			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
-			return;
+			if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.SourceController))
+			{
+				PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
+				return;
+			}
 		}
-		if (AAuraPlayerController* PC =Cast<AAuraPlayerController>( Props.TargetCharacter->Controller))
+	}
+
+	if (IsValid(Props.TargetController))
+	{
+		if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.TargetController))
 		{
 			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
