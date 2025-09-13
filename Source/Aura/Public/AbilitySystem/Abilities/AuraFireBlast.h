@@ -33,4 +33,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AAuraFireBall> FireBallClass;
+
+	
 };
