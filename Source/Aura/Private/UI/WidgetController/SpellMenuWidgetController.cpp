@@ -124,7 +124,7 @@ void USpellMenuWidgetController::EquipButtonPressed()
 	WaitForEquipDelegate.Broadcast(AbilityType);
 	bWaitingForEquipSelection = true;
 
-	const FGameplayTag SelectedStatus = GetAuraASC()->GetStatusFormAbilityTag(SelectedAbility.Ability);
+	const FGameplayTag SelectedStatus = GetAuraASC()->GetStatusFromAbilityTag(SelectedAbility.Ability);
 	if (SelectedStatus.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Status_Equipped))
 	{
 		SelectedSlot = GetAuraASC()->GetSlotFromAbilityTag(SelectedAbility.Ability);

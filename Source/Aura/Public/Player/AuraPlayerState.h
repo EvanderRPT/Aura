@@ -12,6 +12,7 @@ class UAttributeSet;
 class UAbilitySystemComponent;
 class ULevelUpInfo;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChanged, int32)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnLevelChanged, int32 /*StatValue*/, bool /*bLevelUp*/)
 /**
  * 
  */
@@ -37,9 +38,11 @@ public:
 	
 	void SetXP(int32 NewXP);
 	void SetLevel(int32 NewLevel);
+	void SetAttributePoints(int32 InPoints);
+	void SetSpellPoints(int32 InPoints);
 
 	FOnPlayerStatChanged OnXPChangedDelegate;
-	FOnPlayerStatChanged OnLevelChangedDelegate;
+	FOnLevelChanged  OnLevelChangedDelegate;
 	FOnPlayerStatChanged OnAttributePointsChangedDelegate;
 	FOnPlayerStatChanged OnSpellPointsChangedDelegate;
 	
@@ -68,13 +71,15 @@ private:
 	int32 Level = 1;
 
 	UPROPERTY(ReplicatedUsing=OnRep_XP, VisibleAnywhere)
-	int32 XP = 1;
+	int32 XP = 0;
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_AttributePoints)
 	int32 AttributePoints = 0;
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_SpellPoints)
 	int32 SpellPoints = 1;
+
+	// TODO: Save Inventory Item 
 	
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);

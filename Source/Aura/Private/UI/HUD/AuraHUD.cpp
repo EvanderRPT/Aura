@@ -33,6 +33,26 @@ UAttributeMenuWidgetController* AAuraHUD::GetAttributeMenuWidgetController(const
 
 USpellMenuWidgetController* AAuraHUD::GetSpellMenuWidgetController(const FWidgetControllerParams& WCParams)
 {
+
+	// if (SpellMenuWidgetController == nullptr)
+	// {
+	// 	if (!SpellMenuWidgetControllerClass)
+	// 	{
+	// 		UE_LOG(LogTemp, Error, TEXT("[%s] SpellMenuWidgetControllerClass is null! Please assign it in BP_AuraHUD."), *GetName());
+	// 		return nullptr;
+	// 	}
+	// 	SpellMenuWidgetController = NewObject<USpellMenuWidgetController>(this, SpellMenuWidgetControllerClass);
+	// 	if (!SpellMenuWidgetController)
+	// 	{
+	// 		UE_LOG(LogTemp, Error, TEXT("[%s] Failed to create SpellMenuWidgetController of class %s"),
+	// 			*GetName(), *SpellMenuWidgetControllerClass->GetName());
+	// 		return nullptr;
+	// 	}
+	//
+	// 	SpellMenuWidgetController->SetWidgetControllerParams(WCParams);
+	// 	SpellMenuWidgetController->BindCallbacksToDependencies();
+	// }
+	// return SpellMenuWidgetController;
 	if (SpellMenuWidgetController == nullptr)
 	{
 		SpellMenuWidgetController = NewObject<USpellMenuWidgetController>(this, SpellMenuWidgetControllerClass);

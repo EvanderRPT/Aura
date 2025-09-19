@@ -7,7 +7,7 @@
 #include "NiagaraComponent.h"
 #include "PassiveNiagaraComponent.generated.h"
 
-
+class UAuraAbilitySystemComponent;
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class AURA_API UPassiveNiagaraComponent : public UNiagaraComponent
 {
@@ -18,7 +18,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag PassiveSpellTag;
-	
+	void ActivateIfEquipped(UAuraAbilitySystemComponent* AuraASC);
 protected:
 	virtual void BeginPlay() override;
 	void OnPassiveActivate(const FGameplayTag& AbilityTag, bool bActivate);

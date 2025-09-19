@@ -7,7 +7,7 @@
 #include "AuraAbilitySystemComponent.generated.h"
 
 class UAuraAbilitySystemComponent;
-
+class ULoadScreenSaveGame;
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /* AssetTags */);
 DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
@@ -33,7 +33,9 @@ public:
 	FAbilityEquipped AbilityEquipped;
 	FDeactivatePassiveAbility DeactivatePassiveAbility;
 	FActivatePassiveEffect ActivatePassiveEffect;
-	
+
+
+	void AddCharacterAbilitiesFromSaveData(ULoadScreenSaveGame* SaveData);
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities);
 	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupPassiveAbilities);
 	bool bStartupAbilitiesGiven = false;
@@ -46,7 +48,7 @@ public:
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec);
-	FGameplayTag GetStatusFormAbilityTag(const FGameplayTag& AbilityTag);
+	FGameplayTag GetStatusFromAbilityTag(const FGameplayTag& AbilityTag);
 	FGameplayTag GetSlotFromAbilityTag(const FGameplayTag& AbilityTag);
 	bool SlotIsEmpty(const FGameplayTag& Slot);
 	static bool AbilityHasSlot(const FGameplayAbilitySpec& Spec, const FGameplayTag& Slot);
